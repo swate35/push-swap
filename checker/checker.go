@@ -8,18 +8,22 @@ import (
 	"strings"
 )
 
+// Node représente un élément d'une pile doublement chaînée.
+// Chaque nœud contient une valeur et les liens vers le précédent et le suivant.
 type Node struct {
 	Value int
 	Prev  *Node
 	Next  *Node
 }
 
+// Stack représente une pile avec un pointeur vers le sommet, le fond et sa taille.
 type Stack struct {
 	Top    *Node
 	Bottom *Node
 	Size   int
 }
 
+// PushTop ajoute une valeur au sommet de la pile.
 func (s *Stack) PushTop(value int) {
 	node := &Node{Value: value}
 
@@ -35,6 +39,8 @@ func (s *Stack) PushTop(value int) {
 	s.Size++
 }
 
+// PopTop retire et retourne la valeur du sommet de la pile.
+// Le booléen indique si l'opération a réussi.
 func (s *Stack) PopTop() (int, bool) {
 	if s.Size == 0 {
 		return 0, false
@@ -55,6 +61,7 @@ func (s *Stack) PopTop() (int, bool) {
 	return value, true
 }
 
+// Swap échange les deux premiers éléments de la pile.
 func (s *Stack) Swap() {
 	if s.Size < 2 {
 		return
@@ -77,6 +84,8 @@ func (s *Stack) Swap() {
 	s.Top = second
 }
 
+// Rotate décale tous les éléments de la pile vers le haut.
+// Le premier élément devient le dernier.
 func (s *Stack) Rotate() {
 	if s.Size < 2 {
 		return
@@ -94,6 +103,8 @@ func (s *Stack) Rotate() {
 	s.Bottom = first
 }
 
+// ReverseRotate décale tous les éléments de la pile vers le bas.
+// Le dernier élément devient le premier.
 func (s *Stack) ReverseRotate() {
 	if s.Size < 2 {
 		return
@@ -111,6 +122,7 @@ func (s *Stack) ReverseRotate() {
 	s.Top = last
 }
 
+// push déplace le sommet de src vers le sommet de dest.
 func push(dest, src *Stack) {
 	value, ok := src.PopTop()
 	if !ok {
@@ -119,6 +131,7 @@ func push(dest, src *Stack) {
 	dest.PushTop(value)
 }
 
+// isSorted vérifie si la pile est triée dans l'ordre croissant.
 func isSorted(stack *Stack) bool {
 	if stack.Size < 2 {
 		return true
@@ -136,10 +149,13 @@ func isSorted(stack *Stack) bool {
 	return true
 }
 
+// parseArguments lit les valeurs passées en arguments,
+// vérifie qu'elles sont valides et construit la pile A.
 func parseArguments(args []string) (*Stack, error) {
 	stack := &Stack{}
 	seen := make(map[int]struct{})
 
+	// Première passe : validation des arguments.
 	for _, arg := range args {
 		tokens := strings.Fields(arg)
 
@@ -163,7 +179,7 @@ func parseArguments(args []string) (*Stack, error) {
 		}
 	}
 
-	// Conservation de l'ordre original
+	// Deuxième passe : conservation de l'ordre original des nombres.
 	var values []int
 
 	for _, arg := range args {
@@ -173,6 +189,7 @@ func parseArguments(args []string) (*Stack, error) {
 		}
 	}
 
+	// On insère dans la pile dans l'ordre inverse pour garder l'ordre initial en haut.
 	for i := len(values) - 1; i >= 0; i-- {
 		stack.PushTop(values[i])
 	}
@@ -180,6 +197,8 @@ func parseArguments(args []string) (*Stack, error) {
 	return stack, nil
 }
 
+// applyInstruction applique une instruction à la pile A et/ou B.
+// Retourne false si l'instruction n'existe pas.
 func applyInstruction(a, b *Stack, instruction string) bool {
 	switch instruction {
 
@@ -226,10 +245,13 @@ func applyInstruction(a, b *Stack, instruction string) bool {
 	return true
 }
 
+// printError affiche le message d'erreur attendu par le checker.
 func printError() {
 	fmt.Fprintln(os.Stderr, "Error")
 }
 
+// main lance le checker : il parse la pile, lit les instructions,
+// puis valide si la pile A est correctement triée.
 func main() {
 	if len(os.Args) == 1 {
 		return
