@@ -4,32 +4,83 @@
 à trier en arguments, lit une suite d'instructions sur l'entrée standard et
 simule ces instructions sur deux piles (`A` et `B`).
 
-## Compilation et utilisation
-
 Depuis la racine du dépôt, lancez le programme avec Go :
 
-```sh
-go run checker/checker.go 3 2 1
+```powershell
+go run .\checker\checker.go "3 2 1"
 ```
 
-Les nombres peuvent être fournis séparément ou dans un même argument :
-
-```sh
-go run checker/checker.go "3 2 1"
-```
-
-Les instructions sont lues une par ligne depuis l'entrée standard. Par
-exemple, avec PowerShell :
+Les nombres peuvent aussi être fournis comme arguments séparés :
 
 ```powershell
-"sa" | go run .\checker\checker.go 2 3
+go run .\checker\checker.go 3 2 1
 ```
 
-Pour vérifier la sortie d'un programme `push_swap`, transmettez ses
-instructions au checker :
+Dans les deux formes, le premier nombre est placé au sommet de la pile `A`.
 
-```sh
-./push_swap 3 2 1 | go run checker/checker.go 3 2 1
+## Envoyer les instructions
+
+Les instructions doivent être saisies une par ligne sur l'entrée standard.
+Dans PowerShell, cette commande attend une saisie interactive :
+
+```powershell
+go run .\checker\checker.go "3 2 1"
+```
+
+Après avoir lancé la commande, saisissez les instructions une par ligne.
+Pour terminer la saisie dans le terminal Windows, appuyez sur `Ctrl+Z`,
+puis sur Entrée.
+
+Pour fournir directement plusieurs instructions, utilisez les éléments d'un
+tableau PowerShell :
+
+```powershell
+@("sa", "rra") | go run .\checker\checker.go "3 2 1"
+```
+
+Exemple avec une suite permettant de trier `3 2 1 0` :
+
+```powershell
+@("rra", "pb", "sa", "rra", "pa") | go run .\checker\checker.go "3 2 1 0"
+```
+
+Sortie attendue :
+
+```text
+OK
+```
+
+Un petit script PowerShell peut aussi écrire les instructions une par une :
+
+```powershell
+@("sa", "rra", "pb") | go run .\checker\checker.go "3 2 1"
+```
+
+## Vérifier la sortie de push-swap
+
+Depuis la racine du dépôt, une fois le programme `push-swap` compilé, ses
+instructions peuvent être envoyées directement au checker :
+
+```powershell
+$ARG = "4 67 3 87 23"
+.\push-swap.exe $ARG | go run .\checker\checker.go $ARG
+```
+
+Le checker affiche alors `OK` si le résultat de `push-swap` trie correctement
+la pile.
+
+## Compiler le checker
+
+Pour produire un exécutable nommé `checker.exe` :
+
+```powershell
+go build -o checker.exe .\checker\checker.go
+```
+
+Puis lancez-le :
+
+```powershell
+@("rra", "pb", "sa", "rra", "pa") | .\checker.exe "3 2 1 0"
 ```
 
 ## Instructions reconnues
