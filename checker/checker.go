@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -245,43 +246,50 @@ func applyInstruction(a, b *Stack, instruction string) bool {
 	return true
 }
 
-// printError affiche le message d'erreur attendu par le checker.
-func printError() {
-	fmt.Fprintln(os.Stderr, "Error")
+// printError affiche le message d'erreur attendu sur la sortie d'erreur.
+func printError(writer io.Writer) {
+	fmt.Fprintln(writer, "Error")
 }
 
-// main lance le checker : il parse la pile, lit les instructions,
-// puis valide si la pile A est correctement triée.
-func main() {
-	if len(os.Args) == 1 {
-		return
+// run lance le traitement du checker avec des flux configurables afin de
+// permettre les tests unitaires et d'intégration sans processus externe.
+func run(args []string, reader io.Reader, stdout, stderr io.Writer) int {
+	if len(args) == 0 {
+		return 0
 	}
 
-	stackA, err := parseArguments(os.Args[1:])
+	stackA, err := parseArguments(args)
 	if err != nil {
-		printError()
-		return
+		printError(stderr)
+		return 1
 	}
 
 	stackB := &Stack{}
 
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
 		if !applyInstruction(stackA, stackB, scanner.Text()) {
-			printError()
-			return
+			printError(stderr)
+			return 1
 		}
 	}
 
 	if scanner.Err() != nil {
-		printError()
-		return
+		printError(stderr)
+		return 1
 	}
 
 	if stackB.Size == 0 && isSorted(stackA) {
-		fmt.Println("OK")
+		fmt.Fprintln(stdout, "OK")
 	} else {
-		fmt.Println("KO")
+		fmt.Fprintln(stdout, "KO")
 	}
+
+	return 0
+}
+
+// main lance le checker avec les arguments et les flux standards.
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }
