@@ -11,11 +11,17 @@ func parseArgs(args []string) ([]int, error) {
 	seen := map[int]bool{}
 
 	for _, arg := range args {
-		for _, field := range strings.Fields(arg) {
-			n, err := strconv.Atoi(field)
+		fields := strings.Fields(arg)
+		if len(fields) == 0 {
+			return nil, errors.New("empty argument")
+		}
+
+		for _, field := range fields {
+			value, err := strconv.ParseInt(field, 10, 32)
 			if err != nil {
 				return nil, err
 			}
+			n := int(value)
 			if seen[n] {
 				return nil, errors.New("duplicate value")
 			}

@@ -64,14 +64,12 @@ Comportement :
 
 ## Algorithme
 
-Le choix de la stratégie dépend du nombre d'éléments ([sort.go](push-swap/sort.go)) :
+Le choix de la stratégie dépend du nombre d'éléments ([sort.go](sort.go)) :
 
-- **2 éléments** : un `sa`.
-- **3 éléments** : tri par cas, 2 instructions maximum.
-- **4 ou 5 éléments** : les plus petits éléments sont envoyés dans `b` par le chemin le plus court (`ra` ou `rra`), les 3 restants sont triés, puis tout est ramené avec `pa`.
-- **6 éléments ou plus** : tri **radix** binaire. Les valeurs sont d'abord normalisées en rangs (0 à n-1), puis, bit par bit du poids faible au poids fort, les éléments dont le bit vaut 0 passent dans `b` (`pb`) et les autres tournent (`ra`), avant de tout ramener dans `a`.
+- **7 éléments ou moins** : recherche en largeur du plus court chemin dans l'ensemble des états accessibles, donnant un nombre minimal d'instructions.
+- **Plus de 7 éléments** : tri **radix** binaire. Les valeurs sont d'abord normalisées en rangs (0 à n-1), puis, bit par bit du poids faible au poids fort, les éléments dont le bit vaut 0 passent dans `b` (`pb`) et les autres tournent (`ra`), avant de tout ramener dans `a`.
 
-Une étape d'optimisation finale (`optimize`) :
+Pour les grandes piles, une étape d'optimisation locale (`optimize`) :
 
 - supprime les instructions qui s'annulent (`pa`/`pb`, `ra`/`rra`, `rb`/`rrb`) ;
 - fusionne les paires compatibles (`ra`+`rb` → `rr`, `rra`+`rrb` → `rrr`, `sa`+`sb` → `ss`).
@@ -91,7 +89,15 @@ push-swap/
 
 ## Tests
 
+Depuis la racine du dépôt :
+
 ```bash
-cd push-swap
 go test ./...
+```
+
+Pour compiler les deux exécutables depuis la racine du dépôt sous Windows :
+
+```powershell
+go build -o checker.exe .\checker
+go build -o push-swap.exe .\push-swap
 ```
