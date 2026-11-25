@@ -1,7 +1,5 @@
 package main
 
-// stacks holds both stacks (index 0 is the top) and records every
-// instruction that is executed on them.
 type stacks struct {
 	a, b         []int
 	instructions []string
@@ -29,7 +27,6 @@ func reverseRotate(s []int) {
 	}
 }
 
-// push moves the top of from onto to and returns both stacks.
 func push(from, to []int) ([]int, []int) {
 	if len(from) == 0 {
 		return from, to

@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-// run applies the instructions on a copy of numbers and returns the stacks.
 func run(t *testing.T, numbers []int, instructions []string) *stacks {
 	t.Helper()
 	s := &stacks{a: append([]int{}, numbers...), b: []int{}}
@@ -48,7 +47,7 @@ func TestSolveSorts(t *testing.T) {
 		for try := 0; try < 20; try++ {
 			numbers := rand.Perm(size * 3)[:size]
 			for i := range numbers {
-				numbers[i] -= size // include negatives
+				numbers[i] -= size
 			}
 			s := run(t, numbers, solve(numbers))
 			if !sortstack(s.a) || len(s.b) != 0 {

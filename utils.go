@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-// parseArgs converts the arguments into integers.
-// It returns an error if a value is not an integer or appears twice.
 func parseArgs(args []string) ([]int, error) {
 	result := []int{}
 	seen := map[int]bool{}
@@ -28,7 +26,6 @@ func parseArgs(args []string) ([]int, error) {
 	return result, nil
 }
 
-// sortstack reports whether the stack is sorted in ascending order.
 func sortstack(a []int) bool {
 	for i := 0; i < len(a)-1; i++ {
 		if a[i] > a[i+1] {

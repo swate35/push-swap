@@ -5,7 +5,6 @@ import (
 	"sort"
 )
 
-// solve sorts a and returns the (optimised) list of instructions.
 func solve(numbers []int) []string {
 	s := &stacks{a: append([]int{}, numbers...), b: []int{}}
 
@@ -24,27 +23,25 @@ func solve(numbers []int) []string {
 	return optimize(s.instructions)
 }
 
-// sort3 sorts a stack of three elements in at most two instructions.
 func sort3(s *stacks) {
 	x, y, z := s.a[0], s.a[1], s.a[2]
 
 	switch {
-	case x > y && y < z && x < z: // 2 1 3
+	case x > y && y < z && x < z:
 		s.sa()
-	case x > y && y > z: // 3 2 1
+	case x > y && y > z:
 		s.sa()
 		s.rra()
-	case x > y && y < z && x > z: // 3 1 2
+	case x > y && y < z && x > z:
 		s.ra()
-	case x < y && y > z && x < z: // 1 3 2
+	case x < y && y > z && x < z:
 		s.sa()
 		s.ra()
-	case x < y && y > z && x > z: // 2 3 1
+	case x < y && y > z && x > z:
 		s.rra()
 	}
 }
 
-// sortSmall sorts 4 or 5 elements by sending the smallest ones to b.
 func sortSmall(s *stacks) {
 	for len(s.a) > 3 {
 		pos := minIndex(s.a)
@@ -78,7 +75,6 @@ func minIndex(a []int) int {
 	return min
 }
 
-// normalize replaces every value by its rank (0 = smallest).
 func normalize(a []int) {
 	sorted := append([]int{}, a...)
 	sort.Ints(sorted)
@@ -87,7 +83,6 @@ func normalize(a []int) {
 	}
 }
 
-// radix sorts the stack bit by bit, from the lowest to the highest.
 func radix(s *stacks) {
 	normalize(s.a)
 	nbBits := bits.Len(uint(len(s.a) - 1))
@@ -125,7 +120,6 @@ var mergedName = map[string]string{
 	"sa": "ss", "sb": "ss",
 }
 
-// optimize removes instructions that cancel out and merges pairs.
 func optimize(instructions []string) []string {
 	result := []string{}
 
